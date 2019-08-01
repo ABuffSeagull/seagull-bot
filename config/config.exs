@@ -21,6 +21,12 @@ use Mix.Config
 #     config :logger, level: :info
 #
 
+env = System.get_env()
+
+config :nostrum,
+  um_shards: Map.get(env, "NUM_SHARDS", :auto),
+  token: Map.get(env, "TOKEN")
+
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
 # by uncommenting the line below and defining dev.exs, test.exs and such.
