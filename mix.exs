@@ -23,6 +23,9 @@ defmodule SeagullBot.MixProject do
   defp deps do
     [
       {:nostrum, "~> 0.3.2"},
+      {:cachex, "~> 3.1"},
+      {:httpoison, "~> 1.5"},
+      {:jason, "~> 1.1"},
       {:credo, "~> 1.1.2", only: [:dev, :test], runtime: false}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
