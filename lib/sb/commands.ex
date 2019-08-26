@@ -16,20 +16,32 @@ defmodule SB.Commands do
         url: "https://nominatim.openstreetmap.org/search",
         params: [format: "jsonv2", q: location]
       })
+      |> IO.inspect()
 
-    %{"lat" => lat, "lon" => long, "display_name" => display_name} =
-      body
-      |> Jason.decode!()
-      |> List.first()
+    result = Jason.decode!(body)
 
-    {lat, long, display_name}
+    case result do
+      [] ->
+        {:ignore, nil}
+
+      _ ->
+        %{"lat" => lat, "lon" => long, "display_name" => display_name} = List.first(result)
+
+        {lat, long, display_name}
+    end
   end
 
-  def handle_command("latlong" <> location, channel_id) do
-    {_status, {_lat, _long, display_name}} =
-      Cachex.fetch(:lat_long, String.trim(location), &get_geocode/1)
+  def handle_command("find" <> location, channel_id) do
+    message =
+      case Cachex.fetch(:lat_long, String.trim(location), &get_geocode/1) do
+        {:commit, {_lat, _long, display_name}} ->
+          "I found '#{display_name}', hopefully that's correct"
 
-    Api.create_message(channel_id, "I found '#{display_name}', hopefully that's correct")
+        {:ignore, nil} ->
+          "According to my records, that place doesn't exist"
+      end
+
+    Api.create_message(channel_id, message)
   end
 
   def handle_command("say" <> message, channel_id) do

@@ -25,7 +25,7 @@ env = System.get_env()
 
 config :nostrum,
   um_shards: Map.get(env, "NUM_SHARDS", :auto),
-  token: Map.get(env, "TOKEN")
+  token: Map.get(env, "DISCORD_TOKEN")
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
