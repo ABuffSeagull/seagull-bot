@@ -21,6 +21,8 @@ import Config
 #     config :logger, level: :info
 #
 
+config :logger, level: :info
+
 env = System.get_env()
 
 config :nostrum,
