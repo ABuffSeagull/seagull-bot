@@ -4,7 +4,7 @@ defmodule SeagullBot.MixProject do
   def project do
     [
       app: :seagull_bot,
-      version: "1.1.0",
+      version: "1.2.0",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps()
@@ -22,7 +22,7 @@ defmodule SeagullBot.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:nostrum, "~> 0.3.2"},
+      {:nostrum, "~> 0.4"},
       {:cachex, "~> 3.1"},
       {:httpoison, "~> 1.5"},
       {:jason, "~> 1.1"},

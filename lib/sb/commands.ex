@@ -107,11 +107,7 @@ Today: #{Map.get(hourly, "summary")}"
   end
 
   def extra_checks(message, channel_id) do
-    message =
-      cond do
-        String.contains?(message, "spoop") -> "boo"
-        true -> nil
-      end
+    message = if(String.contains?(message, "spoop"), do: "boo")
 
     if(message, do: Api.create_message(channel_id, message))
   end

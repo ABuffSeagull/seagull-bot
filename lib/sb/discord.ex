@@ -11,13 +11,12 @@ defmodule SB.Discord do
   def handle_event({:READY, _data, _ws_state}), do: Logger.info("Logged in!")
 
   def handle_event(
-        {:MESSAGE_CREATE, {%Message{content: message, channel_id: channel_id}}, _ws_state}
+        {:MESSAGE_CREATE, %Message{content: message, channel_id: channel_id}, _ws_state}
       ),
       do: handle_message(message, channel_id)
 
   def handle_event(_event) do
-    # IO.inspect(data, label: "Etc")
-    :noop
+    # IO.inspect(event, label: "Etc")
   end
 
   def handle_message("!" <> command, channel_id),
