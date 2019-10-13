@@ -84,4 +84,35 @@ Today: #{Map.get(hourly, "summary")}"
   end
 
   def handle_command(_unknown_command, _channel_id), do: :noop
+
+  @vowels String.codepoints("aeiou")
+
+  def find_first_vowel(str) do
+    str
+    |> String.codepoints()
+    |> Enum.find_index(&(&1 in @vowels))
+  end
+
+  def say_thanks(message, channel_id, caps) do
+    message =
+      message
+      |> String.replace(~r/^s?( you)?/, "")
+      |> String.trim()
+
+    unless String.contains?(message, " ") do
+      {_first, rest} = String.split_at(message, find_first_vowel(message))
+      prefix = if(caps, do: "Th", else: "th")
+      Api.create_message(channel_id, prefix <> rest)
+    end
+  end
+
+  def extra_checks(message, channel_id) do
+    message =
+      cond do
+        String.contains?(message, "spoop") -> "boo"
+        true -> nil
+      end
+
+    if(message, do: Api.create_message(channel_id, message))
+  end
 end
