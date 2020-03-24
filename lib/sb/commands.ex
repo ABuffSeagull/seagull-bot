@@ -99,7 +99,7 @@ Today: #{Map.get(hourly, "summary")}"
       |> String.replace(~r/^s?( you)?/, "")
       |> String.trim()
 
-    unless String.contains?(message, " ") do
+    unless String.contains?(message, " ") or Regex.match?(~r/\W/, message) do
       {_first, rest} = String.split_at(message, find_first_vowel(message))
       prefix = if(caps, do: "Th", else: "th")
       Api.create_message(channel_id, prefix <> rest)
