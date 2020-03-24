@@ -26,11 +26,7 @@ config :logger, level: :info
 env = System.get_env()
 
 config :nostrum,
-  num_shards: Map.get(env, "NUM_SHARDS", :auto),
-  token: Map.get(env, "DISCORD_TOKEN")
-
-config :seagull_bot,
-  token: Map.get(env, "DARK_SKY_TOKEN")
+  num_shards: Map.get(env, "NUM_SHARDS", :auto)
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
@@ -38,4 +34,4 @@ config :seagull_bot,
 # Configuration from the imported file will override the ones defined
 # here (which is why it is important to import them last).
 #
-#     import_config "#{Mix.env()}.exs"
+import_config "tokens.secret.exs"
