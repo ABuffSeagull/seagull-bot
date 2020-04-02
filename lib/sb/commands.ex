@@ -1,6 +1,4 @@
 defmodule SB.Commands do
-  alias HTTPoison.Request
-  alias HTTPoison.Response
   alias Nostrum.Api
   require Cachex
   require HTTPoison
@@ -14,14 +12,14 @@ defmodule SB.Commands do
   defp get_geocode(location) do
     Logger.info("Grabbing new geocode for #{location}")
 
-    {:ok, %Response{body: body}} =
-      HTTPoison.request(%Request{
-        method: :get,
-        url: "https://nominatim.openstreetmap.org/search",
+    result =
+      HTTPoison.get!(
+        "https://nominatim.openstreetmap.org/search",
+        [],
         params: [format: "jsonv2", q: location]
-      })
-
-    result = Jason.decode!(body)
+      )
+      |> Map.get(:body)
+      |> Jason.decode!()
 
     case result do
       [] ->
@@ -55,8 +53,7 @@ defmodule SB.Commands do
 
         {_, {lat, lng, display_name}} ->
           %{"currently" => currently, "hourly" => hourly} =
-            HTTPoison.request!(
-              :get,
+            HTTPoison.get!(
               "https://api.darksky.net/forecast/#{Application.fetch_env!(:seagull_bot, :token)}/#{
                 lat
               },#{lng}"
@@ -85,7 +82,7 @@ Today: #{Map.get(hourly, "summary")}"
 
   def handle_command(_unknown_command, _channel_id), do: :noop
 
-  @vowels String.codepoints("aeiou")
+  @vowels String.codepoints("aeiouAEIOU")
 
   def find_first_vowel(str) do
     str
