@@ -4,7 +4,7 @@ defmodule SeagullBot.MixProject do
   def project do
     [
       app: :seagull_bot,
-      version: "1.2.2",
+      version: "1.2.3",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps()
