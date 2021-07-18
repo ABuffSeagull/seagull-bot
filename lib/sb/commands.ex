@@ -5,32 +5,7 @@ defmodule SB.Commands do
   require Jason
   require Logger
 
-  defp f_to_c(temp), do: Float.round((temp - 32) * 5 / 9, 2)
-
-  defp mi_to_kilo(distance), do: Float.round(distance * 1.609344, 2)
-
-  defp get_geocode(location) do
-    Logger.info("Grabbing new geocode for #{location}")
-
-    result =
-      HTTPoison.get!(
-        "https://nominatim.openstreetmap.org/search",
-        [],
-        params: [format: "jsonv2", q: location]
-      )
-      |> Map.get(:body)
-      |> Jason.decode!()
-
-    case result do
-      [] ->
-        {:ignore, nil}
-
-      _ ->
-        %{"lat" => lat, "lon" => long, "display_name" => display_name} = List.first(result)
-
-        {lat, long, display_name}
-    end
-  end
+  @vowels String.codepoints("aeiouAEIOU")
 
   def handle_command("find" <> location, channel_id) do
     message =
@@ -80,14 +55,8 @@ Today: #{Map.get(hourly, "summary")}"
     Api.create_message(channel_id, message)
   end
 
-  def handle_command(_unknown_command, _channel_id), do: :noop
-
-  @vowels String.codepoints("aeiouAEIOU")
-
-  def find_first_vowel(str) do
-    str
-    |> String.codepoints()
-    |> Enum.find_index(&(&1 in @vowels))
+  def handle_command(_unknown_command, _channel_id) do
+    :noop
   end
 
   def say_thanks(message, channel_id, caps) do
@@ -106,6 +75,39 @@ Today: #{Map.get(hourly, "summary")}"
   def extra_checks(message, channel_id) do
     if Regex.match?(~r/spoop/i, message) do
       Api.create_message(channel_id, "boo")
+    end
+  end
+
+  defp find_first_vowel(str) do
+    str
+    |> String.codepoints()
+    |> Enum.find_index(&(&1 in @vowels))
+  end
+
+  defp f_to_c(temp), do: Float.round((temp - 32) * 5 / 9, 2)
+
+  defp mi_to_kilo(distance), do: Float.round(distance * 1.609344, 2)
+
+  defp get_geocode(location) do
+    Logger.info("Grabbing new geocode for #{location}")
+
+    result =
+      HTTPoison.get!(
+        "https://nominatim.openstreetmap.org/search",
+        [],
+        params: [format: "jsonv2", q: location]
+      )
+      |> Map.get(:body)
+      |> Jason.decode!()
+
+    case result do
+      [] ->
+        {:ignore, nil}
+
+      [first_result | _] ->
+        %{"lat" => lat, "lon" => long, "display_name" => display_name} = first_result
+
+        {lat, long, display_name}
     end
   end
 end

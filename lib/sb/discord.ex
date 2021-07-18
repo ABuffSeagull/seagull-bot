@@ -1,7 +1,7 @@
 defmodule SB.Discord do
   use Nostrum.Consumer
-  require Logger
   alias Nostrum.Struct.Message
+  require Logger
 
   def start_link do
     Logger.info("Starting up...")
